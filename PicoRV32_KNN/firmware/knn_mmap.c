@@ -51,16 +51,20 @@ void knn_mmap(void)
 	int max_label = 0;
 	int num_labels[NUM_CLASS] = {0};
 
-	//find the label which gets the most votes
+	//count the votes for each labels
 	for(i = 0; i < K; i++){
 		int label = *(volatile uint32_t*)(IMAGE_OFFSET + (top_images[i][1] + NUM_TEST_IMAGE) * DATA_LENGTH * 4);
 		num_labels[label]++;
-		if(num_labels[label] > max_count){
-			max_count = num_labels[label];
-			max_label = label;
+	}
+	
+	//find the label with the most votes
+	for(i = 0; i < NUM_CLASS; i++){
+		if(num_labels[i] > max_count){
+			max_count = num_labels[i];
+			max_label = i;
 		}
 	}
-
+	
 	print_str("\nThe result of soft_knn is:");
 	print_dec(max_label);
 	print_str("\n");
